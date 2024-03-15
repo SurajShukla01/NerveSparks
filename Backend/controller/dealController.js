@@ -1,4 +1,4 @@
-const {Deal} = require('../models/Deal')
+const {Deal} = require('../models/deal')
 const { getDB } = require('../config/db')
 
 const createDeal = async (req,res) => {
