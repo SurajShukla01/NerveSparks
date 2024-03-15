@@ -1,5 +1,3 @@
-// 
-
 const { MongoClient, ObjectId } = require('mongodb');
 
 // Define the chat schema
