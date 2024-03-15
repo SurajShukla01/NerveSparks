@@ -1,0 +1,93 @@
+<script lang="ts">
+	import { Card } from 'flowbite-svelte';
+	import type { PageData } from '../$types';
+	import Stats from './Stats.svelte';
+	import CarCard from './CarCard.svelte'
+
+	import Footer from '../Footer.svelte';
+	import ActivityList from './ActivityList.svelte';
+	import Change from './Change.svelte';
+	import Chat from './Chat.svelte';
+	import DesktopPc from './DesktopPc.svelte';
+	import Traffic from './Traffic.svelte';
+	import Transactions from './Transactions.svelte';
+	import chart_options_func from './chart_options';
+	import { onMount } from 'svelte';
+
+	export let data: PageData;
+
+	let chartOptions = chart_options_func(false);
+	chartOptions.series = data.series;
+
+	let dark = false;
+
+	function handler(ev: Event) {
+		if ('detail' in ev) {
+			chartOptions = chart_options_func(ev.detail);
+			chartOptions.series = data.series;
+			dark = !!ev.detail;
+		}
+	}
+
+	onMount(() => {
+		document.addEventListener('dark', handler);
+		return () => document.removeEventListener('dark', handler);
+	});
+</script>
+
+<main>
+	<div class="px-4 flex flex-col gap-8">
+		<CarCard />
+		<CarCard />
+		<CarCard />
+		<CarCard />
+		<CarCard />
+	</div>
+	<div class="space-y-4 px-4 pt-4">
+		<div class="grid grid-cols-1 gap-2 sm:gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+			<Card horizontal class="items-center justify-between" size="xl">
+				<div class="w-full">
+					<p>New products</p>
+					<p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
+						2,340
+					</p>
+					<Change size="sm" value={12.5} since="Since last month" />
+				</div>
+			</Card>
+			<Card horizontal class="items-center justify-between" size="xl">
+				<div class="w-full">
+					<p>Users</p>
+					<p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
+						4,420
+					</p>
+					<Change size="sm" value={-3.4} since="Since last month" />
+				</div>
+			</Card>
+			<Card horizontal class="items-center justify-between" size="xl">
+				<div class="w-full">
+					<p>Users</p>
+					<p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
+						4,420
+					</p>
+					<Change size="sm" value={-3.4} since="Since last month" class="w-full" />
+				</div>
+			</Card>
+		</div>
+		<!-- <div class="grid grid-cols-1 gap-2 sm:gap-4 xl:grid-cols-2">
+			<Chat />
+			<div class="flex flex-col gap-2 sm:gap-4">
+				<DesktopPc />
+				<Traffic {dark} />
+			</div>
+		</div> -->
+		<!-- <div class="grid grid-cols-1 gap-2 sm:gap-4 xl:grid-cols-2">
+			<ActivityList />
+		</div> -->
+
+		<!-- <Transactions {dark} /> -->
+	</div>
+</main>
+
+<div class="px-4">
+	<Footer class="my-2 sm:my-4 w-full" />
+</div>
