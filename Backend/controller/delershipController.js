@@ -49,7 +49,29 @@ const getCarsInDealership = async (req, res) => {
         let reslist = []
         for (let id of listCars){
             let ele = await getDB().collection('car').findOne({ _id: new ObjectId(id)})
-            reslist.push(ele)
+            if(ele){
+                reslist.push(ele)
+            }
+        }
+        return res.json(reslist)
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+const getAllDealsByDealership = async (req, res) => {
+    const did = req.params.dID
+
+    try {
+        let dealer = await getDB().collection('dealership').findOne({ _id: new ObjectId(did)})
+        let listDeal = dealer.cars
+        let reslist = []
+        for (let id of listDeal){
+            let ele = await getDB().collection('deals').findOne({ _id: new ObjectId(id)})
+            if(ele){
+                reslist.push(ele)
+            }
         }
         return res.json(reslist)
     }
@@ -61,5 +83,6 @@ const getCarsInDealership = async (req, res) => {
 module.exports = { 
     createDealership,
     getAllDealers,
-    getCarsInDealership
+    getCarsInDealership,
+    getAllDealsByDealership
 }
