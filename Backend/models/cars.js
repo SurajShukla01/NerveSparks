@@ -10,7 +10,8 @@ const CarSchema = z.object({
         fule_type: z.string(),
         color: z.string(),
         transmission_type: z.string(),
-        model_img_url: z.string()
+        model_img_url: z.string(),
+        brand: z.string()
     })
 });
 
