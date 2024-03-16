@@ -39,7 +39,7 @@ const createCar = async (req, res) => {
 }
 const getAllCars = async (req, res) => {
     try {
-        const carData = await getDB().collection('car').findOne({})
+        const carData = await getDB().collection('car').find().toArray()
         return res.json({ cars: carData })
     }
     catch (error) {
