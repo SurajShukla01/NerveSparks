@@ -4,8 +4,9 @@ const { getDB } = require('../config/db')
 
 const createUser = async (req,res) => {
     const usernData = req.body
-    
+    console.log(usernData);
     const parsedPayload = User.safeParse(usernData);
+    console.log(parsedPayload.success); 
     if(!parsedPayload.success)
     {
         return res.status(411).json({
