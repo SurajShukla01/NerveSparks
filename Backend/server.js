@@ -5,6 +5,9 @@ const {connectDB} = require('./config/db')
 const adminRoutes = require('./routers/adminRouter')
 const userRouter = require('./routers/userRouter')
 const dealerRouter = require('./routers/dealerRouter')
+const carRoutes = require('./routers/carRouter')
+const dealRouter = require('./routers/dealRouter')
+const soldRouter = require('./routers/soldRouter')
 const { notFound, errorHandler } = require('./middleware/errorMiddleware')
 
 dotenv.config()
@@ -22,6 +25,33 @@ app.get('/', (req, res) => {
 app.use('/api/admin', adminRoutes)
 app.use('/api/user', userRouter)
 app.use('/api/dealer', dealerRouter)
+app.use('/api/car', carRoutes)
+app.use('/api/deal', dealRouter)
+app.use('/api/sold', soldRouter)
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// async function findDealershipById(dealershipId) {
+//     try {
+//         const collection = getDB().collection('dealership');
+//         const dealership = await collection.findOne({ _id: new ObjectId(dealershipId) });
+//         return dealership;
+//     } catch (error) {
+//         console.error('Error finding dealership by ID:', error);
+//         throw error; // Rethrow the error to handle it in the caller function
+//     }
+// }
+
+// // Example usage:
+// const dealershipId = '65f47a9df092706258f69dc2'; // Example dealership ID
+// const foundDealership = findDealershipById(dealershipId)
+// .then((foundDealership) =>{
+
+//     console.log('Found dealership:', foundDealership);
+// })
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.use(notFound)
 app.use(errorHandler)

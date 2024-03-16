@@ -1,7 +1,9 @@
 const {Deal} = require('../models/deal')
 const { getDB } = require('../config/db')
+const { ObjectId } = require('mongodb');
 
-const createDeal = async (req,res) => {
+const createDeal = async (req, res) => {
+    const did = req.params.dID
     const DealData = req.body
     
     const parsedPayload = Deal.safeParse(DealData);
@@ -16,9 +18,19 @@ const createDeal = async (req,res) => {
         DealData.createdAt = new Date();
         DealData.updatedAt = new Date();
 
-        await collection.insertOne(DealData);
-
+        const dData = await collection.insertOne(DealData);
         console.log('deal data inserted successfully.');
+
+        let response = await getDB().collection('dealership').updateOne(
+            { _id: new ObjectId(did)},
+            {
+                $push: {
+                    deals: dData.insertedId.toString()
+                }
+            }
+        );
+        console.log('Deal appended to the dealership successfully.',response);
+
         return res.status(200).json({ msg: "deal created successfully." });
     } catch (error) {
         console.error('Error inserting deal data:', error);

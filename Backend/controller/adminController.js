@@ -1,4 +1,4 @@
-//adminController.js
+const bcrypt = require('bcryptjs');
 const { Admin } = require('../models/admin');
 const { getDB } = require('../config/db');
 
@@ -13,6 +13,8 @@ const createAdmin = async (req, res) => {
     }
 
     try {
+        const hashedPassword = await bcrypt.hash(adminData.password, 10);
+        adminData.password = hashedPassword;
         const collection = getDB().collection('admin');
         adminData.createdAt = new Date();
         adminData.updatedAt = new Date();

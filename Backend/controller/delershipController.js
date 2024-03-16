@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const {Dealership} = require('../models/dealership')
 const { getDB } = require('../config/db')
 
@@ -12,6 +13,8 @@ const createDealership = async (req,res) => {
         })
     }
     try {
+        const hashedPassword = await bcrypt.hash(DealershipData.password, 10);
+        DealershipData.password = hashedPassword;
         const collection = getDB().collection('dealership');
         DealershipData.createdAt = new Date();
         DealershipData.updatedAt = new Date();
@@ -26,6 +29,17 @@ const createDealership = async (req,res) => {
     }
 }
 
+const getAllDealers = async (req, res) => {
+    try {
+        const dealerData = await getDB().collection('dealership').find().toArray()
+        return res.json({ dealer: dealerData })
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = { 
-    createDealership
+    createDealership,
+    getAllDealers
 }
