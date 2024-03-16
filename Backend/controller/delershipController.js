@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const {Dealership} = require('../models/dealership')
 const { getDB } = require('../config/db')
+const { ObjectId } = require('mongodb')
 
 const createDealership = async (req,res) => {
     const DealershipData = req.body
@@ -39,7 +40,26 @@ const getAllDealers = async (req, res) => {
     }
 }
 
+const getCarsInDealership = async (req, res) => {
+    const did = req.params.dID
+
+    try {
+        let dealer = await getDB().collection('dealership').findOne({ _id: new ObjectId(did)})
+        let listCars = dealer.cars
+        let reslist = []
+        for (let id of listCars){
+            let ele = await getDB().collection('car').findOne({ _id: new ObjectId(id)})
+            reslist.push(ele)
+        }
+        return res.json(reslist)
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = { 
     createDealership,
-    getAllDealers
+    getAllDealers,
+    getCarsInDealership
 }
