@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const {User} = require('../models/user')
 const { getDB } = require('../config/db')
 
@@ -12,6 +13,8 @@ const createUser = async (req,res) => {
         })
     }
     try {
+        const hashedPassword = await bcrypt.hash(usernData.password, 10);
+        usernData.password = hashedPassword;
         const collection = getDB().collection('user');
         usernData.createdAt = new Date();
         usernData.updatedAt = new Date();
@@ -26,6 +29,17 @@ const createUser = async (req,res) => {
     }
 }
 
+const getAllUsers = async (req, res) => {
+    try {
+        const dealerData = await getDB().collection('user').find().toArray()
+        return res.json({ Users: dealerData })
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = { 
-    createUser
+    createUser,
+    getAllUsers
 }
