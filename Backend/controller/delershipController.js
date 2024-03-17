@@ -65,10 +65,10 @@ const getAllDealsByDealership = async (req, res) => {
 
     try {
         let dealer = await getDB().collection('dealership').findOne({ _id: new ObjectId(did)})
-        let listDeal = dealer.cars
+        let listDeal = dealer.deals
         let reslist = []
         for (let id of listDeal){
-            let ele = await getDB().collection('deals').findOne({ _id: new ObjectId(id)})
+            let ele = await getDB().collection('deal').findOne({ _id: new ObjectId(id)})
             if(ele){
                 reslist.push(ele)
             }

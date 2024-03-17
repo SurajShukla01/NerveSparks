@@ -38,6 +38,32 @@ const createDeal = async (req, res) => {
     }
 }
 
+const getDealsOfCar = async (req, res) => {
+    const carid = req.params.carID
+    
+    try {
+        let response = await getDB().collection('deal').find({car_id:carid}).toArray()
+        console.log('Deals found to the dealership successfully.');
+
+        return res.status(200).json(response);
+    } catch (error) {
+        console.error('Error getting deal data:', error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+const getAllDeals = async (req, res) => {
+    try {
+        const Data = await getDB().collection('deal').find().toArray()
+        return res.json({ deals: Data })
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = { 
-    createDeal
+    createDeal,
+    getDealsOfCar,
+    getAllDeals
 }

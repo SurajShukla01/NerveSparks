@@ -29,6 +29,32 @@ const createAdmin = async (req, res) => {
     }
 };
 
+// const authorisation = asyncHandler( async (req,res,next) => {
+//     const {email, password} = req.body
+    
+//     if (!email || !password){
+//         res.status(400)
+//         throw new Error("Please enter a all Fields")
+//     }
+    
+//     const user = await User.findOne({email}) 
+    
+//     if(user && (await user.matchPassword(password))){
+//         res.status(200).json({
+//             _id: user._id,
+//             name: user.name,
+//             email: user.email,
+//             pic : user.pic,
+//             tocken: generateTocken(user._id),
+//         })
+//     } else{
+//         res.status(401)
+//         throw new Error("Invelid emailID and password") 
+//     }
+
+//     next()
+// })
+
 module.exports = { 
     createAdmin
 };

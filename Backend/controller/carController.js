@@ -2,6 +2,7 @@ const { Car } = require('../models/cars')
 const { getDB } = require('../config/db')
 const { ObjectId } = require('mongodb');
 
+
 const createCar = async (req, res) => {
     const did = req.params.dID
     const CarData = req.body
@@ -47,7 +48,51 @@ const getAllCars = async (req, res) => {
     }
 }
 
+const getDealerOfCar = async (req, res) => {
+    const car_id = req.params.carID
+    try {
+        let response = await getDB().collection('dealership').findOne({ cars:{ $in: [car_id] } });
+        return res.json({ dealer: response })
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+const getmycarInfo = async (req, res) => {
+    const userID = req.params.cID
+    try {
+        let response = await getDB().collection('user').findOne({ _id: new ObjectId(userID) });
+        
+        let vehicleList = response.vehicle_info
+        let resultjson = []
+        for(let vehicle of vehicleList){
+            let vehicleData = await getDB().collection('sold').findOne({ _id: new ObjectId(vehicle) });
+            let carData = await getDB().collection('car').findOne({ _id: new ObjectId(vehicleData.car_id) });
+            let DealerData = await getDB().collection('dealership').findOne({ sold_vehicles:{ $in: [vehicle] } });
+            let tempjson = {...vehicleData, ...carData, ...DealerData}
+            delete tempjson._id
+            delete tempjson.car_id
+            delete tempjson.createdAt
+            delete tempjson.updatedAt
+            delete tempjson.password
+            delete tempjson.cars
+            delete tempjson.deals
+            delete tempjson.sold_vehicles
+            tempjson._id = vehicle
+            resultjson.push(tempjson);
+        }
+
+        return res.json(resultjson)
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = {
     createCar,
-    getAllCars
+    getAllCars,
+    getDealerOfCar,
+    getmycarInfo
 }

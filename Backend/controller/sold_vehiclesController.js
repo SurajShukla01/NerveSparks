@@ -13,15 +13,6 @@ function generateRandomRegistrationNumber(length) {
     return result;
 }
 
-async function findDealerIdByCarId(d, cid) {
-    
-    for (let car of d.cars) {
-        if (car == cid) {
-            return d._id.toString();
-        }
-    }
-    return null;
-}
 
 const addVehicle = async (req, res) => {
     const cid = req.params.cID
@@ -85,15 +76,9 @@ const addVehicle = async (req, res) => {
             }
         );
         console.log('Car appended to the user successfully.', response1);
-        const dealerData = await getDB().collection('dealership').find().toArray()
-        for (let d of dealerData) {
-            var did = await findDealerIdByCarId(d, car_id)
-            if (did) {
-                break
-            }
-        }
+        const dealerData = await getDB().collection('dealership').findOne({ cars:{ $in: [car_id] } });
         let response2 = await getDB().collection('dealership').updateOne(
-            { _id: new ObjectId(did) },
+            { _id: new ObjectId(dealerData._id) },
             {
                 $push: {
                     sold_vehicles: vehicle.insertedId.toString()
@@ -109,6 +94,45 @@ const addVehicle = async (req, res) => {
     }
 }
 
+const getSoldVehicles = async (req, res) => {
+    const did = req.params.did
+    let result = []
+    try {
+        const dealerData = await getDB().collection('dealership').findOne({ _id: new ObjectId(did) });
+        let vehiclelist = dealerData.sold_vehicles
+        for (let vehicle of vehiclelist) {
+            const soldDealData = await getDB().collection('sold').findOne({ _id: new ObjectId(vehicle) });
+            const userData = await getDB().collection('user').findOne({ vehicle_info: {$in:[vehicle]} })
+            const carData = await getDB().collection('car').findOne({ _id: new ObjectId(soldDealData.car_id) });
+            let tempjson = {...userData, ...soldDealData, ...carData}
+            delete tempjson._id
+            delete tempjson.createdAt
+            delete tempjson.updatedAt
+            delete tempjson.password
+            tempjson._id = vehicle
+            result.push(tempjson);
+            console.log(tempjson);
+        }
+        
+        return res.status(200).json({ Sold_Cars: result});
+    } catch (error) {
+        console.error('Error inserting Sold data:', error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+const getAllSoldVehicles = async (req, res) => {
+    try {
+        const Data = await getDB().collection('sold').find().toArray()
+        return res.json({ SoldVehicles: Data })
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = {
-    addVehicle
+    addVehicle,
+    getSoldVehicles,
+    getAllSoldVehicles
 }
