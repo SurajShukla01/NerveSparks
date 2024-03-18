@@ -10,6 +10,8 @@ const dealRouter = require('./routers/dealRouter')
 const soldRouter = require('./routers/soldRouter')
 const { notFound, errorHandler } = require('./middleware/errorMiddleware')
 const { authorization } = require('./middleware/authMiddleware')
+const cors = require('cors');
+
 
 dotenv.config()
 connectDB()
@@ -17,6 +19,7 @@ connectDB()
 const PORT = process.env.PORT || 5000
 const app = express()
 
+app.use(cors());
 app.use(express.json())
 
 app.get('/', (req, res) => { 
