@@ -67,15 +67,16 @@ const velidateUser = asyncHandler(async (req, res, next) => {
         next()
     }
     else{
-        return res.status(404).json({message: "Not Found"})
+        return res.status(404).json({message: "1Not Found"})
     }
 })
 const velidateUserDealer = asyncHandler(async (req, res, next) => {
+    console.log(req.user.userType);
     if(req.user.userType == 1 || req.user.userType == 5 || req.user.userType == 10){
         next()
     }
     else{
-        return res.status(404).json({message: "Not Found"})
+        return res.status(404).json({message: "2Not Found"})
     }
 })
 const velidateDealer = asyncHandler(async (req, res, next) => {
@@ -83,7 +84,7 @@ const velidateDealer = asyncHandler(async (req, res, next) => {
         next()
     }
     else{
-        return res.status(404).json({message: "Not Found"})
+        return res.status(404).json({message: "3Not Found"})
     }
 })
 const velidateAdmin = asyncHandler(async (req, res, next) => {
@@ -91,7 +92,7 @@ const velidateAdmin = asyncHandler(async (req, res, next) => {
         next()
     }
     else{
-        return res.status(404).json({message: "Not Found"})
+        return res.status(404).json({message: "4Not Found"})
     }
 })
 
