@@ -9,8 +9,8 @@ const router = express.Router()
 router.post('/create', handleAsync(createDealership))
 router.get('/getAll',handleAsync(protect) ,velidateUserDealer, handleAsync(getAllDealers))
 router.get('/getSoldVehicles/:did',handleAsync(protect) ,velidateDealer, handleAsync(getSoldVehicles))
-router.get('/cars/:dID',handleAsync(protect) ,velidateDealer, handleAsync(getCarsInDealership));
-router.get('/deals/:dID',handleAsync(protect) ,velidateDealer, handleAsync(getAllDealsByDealership)); 
+router.get('/cars/:dID',handleAsync(protect) ,velidateUserDealer, handleAsync(getCarsInDealership));
+router.get('/deals/:dID',handleAsync(protect) ,velidateUserDealer, handleAsync(getAllDealsByDealership)); 
 
 
 module.exports = router
