@@ -5,7 +5,7 @@ const { velidateDealer, protect } = require('../middleware/authMiddleware')
 
 const router = express.Router()
 router.post('/create/:dID',handleAsync(protect) ,velidateDealer, handleAsync(createDeal))
-router.get('/getAll',handleAsync(protect) ,velidateDealer, handleAsync(getAllDeals))
+router.get('/getAll',handleAsync(protect) ,velidateUserDealer, handleAsync(getAllDeals))
 
 
 module.exports = router
