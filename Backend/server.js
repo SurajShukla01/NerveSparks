@@ -9,6 +9,7 @@ const carRoutes = require('./routers/carRouter')
 const dealRouter = require('./routers/dealRouter')
 const soldRouter = require('./routers/soldRouter')
 const { notFound, errorHandler } = require('./middleware/errorMiddleware')
+const { authorization } = require('./middleware/authMiddleware')
 
 dotenv.config()
 connectDB()
@@ -27,6 +28,8 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
+
+app.post('/login', authorization)
 
 app.use('/api/admin', adminRoutes)
 app.use('/api/user', userRouter)

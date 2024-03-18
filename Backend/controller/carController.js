@@ -17,7 +17,7 @@ const createCar = async (req, res) => {
         const collection = getDB().collection('car');
         CarData.createdAt = new Date();
         CarData.updatedAt = new Date();
-
+        
         const cardata = await collection.insertOne(CarData);
         console.log('car data inserted successfully.');
 
@@ -28,27 +28,28 @@ const createCar = async (req, res) => {
                     cars: cardata.insertedId.toString()
                 }
             }
-        );
-
-        console.log('Car appended to the dealership successfully.',response);
-
-        return res.status(200).json({ msg: "car created successfully." });
-    } catch (error) {
-        console.error('Error inserting car data:', error);
-        return res.status(500).json({ error: "Internal Server Error" });
+            );
+            
+            console.log('Car appended to the dealership successfully.',response);
+            
+            return res.status(200).json({ msg: "car created successfully." });
+        } catch (error) {
+            console.error('Error inserting car data:', error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
-}
-const getAllCars = async (req, res) => {
-    try {
-        const carData = await getDB().collection('car').find().toArray()
-        return res.json({ cars: carData })
+    const getAllCars = async (req, res) => {
+        console.log(req.user);
+        try {
+            const carData = await getDB().collection('car').find().toArray()
+            return res.json({ cars: carData })
+        }
+        catch (error) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
-    catch (error) {
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-}
-
-const getDealerOfCar = async (req, res) => {
+    
+    const getDealerOfCar = async (req, res) => {
     const car_id = req.params.carID
     try {
         let response = await getDB().collection('dealership').findOne({ cars:{ $in: [car_id] } });
